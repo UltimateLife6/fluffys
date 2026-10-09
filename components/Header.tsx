@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
 
@@ -18,6 +18,21 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const close = () => setOpen(false);
+  const onMenu = pathname === '/menu';
+
+  useEffect(() => {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    const syncHeight = () => {
+      document.documentElement.style.setProperty('--header-height', `${header.getBoundingClientRect().height}px`);
+    };
+
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <header className="site-header">
@@ -52,8 +67,8 @@ export default function Header() {
               </Link>
             );
           })}
-          <Link className="button primary nav-cta" href="/menu" onClick={close}>
-            View Menu
+          <Link className="button primary nav-cta" href={onMenu ? '/catering' : '/menu'} onClick={close}>
+            {onMenu ? 'Book Catering' : 'View Menu'}
           </Link>
         </nav>
       </div>

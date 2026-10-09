@@ -25,7 +25,8 @@ export default function MenuBoard() {
         Big personality. Bigger flavor. There&apos;s something for every craving.
       </PageHeader>
       <section className="shell menu-section">
-        <div className="filter-bar" role="toolbar" aria-label="Menu categories">
+        <div className="filter-bar">
+          <div className="filter-bar-scroll" role="toolbar" aria-label="Menu categories">
           <button type="button" className={selected === 'All' ? 'active' : ''} onClick={() => setSelected('All')} aria-pressed={selected === 'All'}>
             All
           </button>
@@ -40,6 +41,7 @@ export default function MenuBoard() {
               {category.name}
             </button>
           ))}
+          </div>
         </div>
         <div className={visible.length === 1 ? 'menu-grid single' : 'menu-grid'}>
           {visible.map((category) => (

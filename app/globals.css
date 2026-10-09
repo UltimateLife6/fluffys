@@ -12,6 +12,7 @@
   --line: #eadfce;
   --shadow: 0 14px 34px rgba(37, 19, 16, 0.1);
   --radius: 22px;
+  --header-height: 104px;
 }
 
 * {
@@ -403,6 +404,10 @@ h2 em {
   height: auto;
 }
 
+.menu-photo {
+  aspect-ratio: 8 / 5;
+}
+
 .feature-photo img,
 .menu-photo img {
   object-position: center;
@@ -615,10 +620,19 @@ h2 em {
 }
 
 .filter-bar {
+  position: sticky;
+  top: calc(var(--header-height) - 1px);
+  z-index: 20;
+  margin: 0 0 4px;
+  padding: 12px 0 14px;
+  background: var(--cream);
+}
+
+.filter-bar-scroll {
   display: flex;
+  flex-wrap: nowrap;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 18px;
   scrollbar-width: thin;
 }
 
