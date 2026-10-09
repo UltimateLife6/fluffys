@@ -33,8 +33,24 @@ export const photos = {
   sides: '/food/sides.jpg',
 };
 
-export const photoCredit =
-  "Food photos are illustrative placeholders, not pictures of dishes from Fluffy's Bistro. Bowl, seafood, lemonade, and rice photos are from Unsplash. Funnel cake by Benny Mazur, CC BY 2.0. Shrimp po'boy by Kent Wang, CC BY-SA 2.0, via Wikimedia Commons.";
+export const photoCredits = {
+  note: "Food photos are illustrative placeholders, not dishes from Fluffy's Bistro.",
+  unsplashHref: 'https://unsplash.com/license',
+  funnel: {
+    href: 'https://www.flickr.com/photos/44545509@N00/970806006',
+    author: 'Benny Mazur',
+    authorHref: 'https://www.flickr.com/photos/44545509@N00/',
+    license: 'CC BY 2.0',
+    licenseHref: 'https://creativecommons.org/licenses/by/2.0/',
+  },
+  poboy: {
+    href: 'https://www.flickr.com/photos/27454212@N00/3195718461/',
+    author: 'Kent Wang',
+    authorHref: 'https://www.flickr.com/photos/27454212@N00/',
+    license: 'CC BY-SA 2.0',
+    licenseHref: 'https://creativecommons.org/licenses/by-sa/2.0/',
+  },
+};
 
 export const categories: MenuCategory[] = [
   {

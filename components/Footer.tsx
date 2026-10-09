@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Facebook, Instagram } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
-import { contact, socials } from '@/lib/data';
+import { contact, photoCredits, socials } from '@/lib/data';
 
 const icons = {
   Instagram,
@@ -45,8 +45,41 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Fluffy&apos;s Bistro. All rights reserved.</span>
-          <span>Weekly stops are posted on Instagram.</span>
+          <p className="photo-credits">
+            {photoCredits.note} Bowl, seafood, lemonade, and rice via{' '}
+            <a href={photoCredits.unsplashHref} target="_blank" rel="noopener noreferrer">
+              Unsplash
+            </a>
+            .{' '}
+            <a href={photoCredits.funnel.href} target="_blank" rel="noopener noreferrer">
+              Funnel cake
+            </a>{' '}
+            by{' '}
+            <a href={photoCredits.funnel.authorHref} target="_blank" rel="noopener noreferrer">
+              {photoCredits.funnel.author}
+            </a>
+            ,{' '}
+            <a href={photoCredits.funnel.licenseHref} rel="license noopener noreferrer" target="_blank">
+              {photoCredits.funnel.license}
+            </a>
+            .{' '}
+            <a href={photoCredits.poboy.href} target="_blank" rel="noopener noreferrer">
+              Shrimp po&apos;boy
+            </a>{' '}
+            by{' '}
+            <a href={photoCredits.poboy.authorHref} target="_blank" rel="noopener noreferrer">
+              {photoCredits.poboy.author}
+            </a>
+            ,{' '}
+            <a href={photoCredits.poboy.licenseHref} rel="license noopener noreferrer" target="_blank">
+              {photoCredits.poboy.license}
+            </a>
+            .
+          </p>
+          <div className="footer-meta">
+            <span>© {new Date().getFullYear()} Fluffy&apos;s Bistro. All rights reserved.</span>
+            <span>Weekly stops are posted on Instagram.</span>
+          </div>
         </div>
       </div>
     </footer>

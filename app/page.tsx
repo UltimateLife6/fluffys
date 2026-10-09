@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Flame, Instagram, MapPin, UtensilsCrossed } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
-import { featured, photoCredit, photos, socials } from '@/lib/data';
+import { featured, photos, socials } from '@/lib/data';
 
 export default function Home() {
   const instagram = socials[0];
@@ -88,7 +88,6 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <p className="photo-note">{photoCredit}</p>
       </section>
 
       <section className="catering-band">

@@ -445,7 +445,6 @@ h2 em {
 .menu-group-body > p,
 .benefit p,
 .value span,
-.photo-note,
 .menu-disclaimer,
 .page-hero-text,
 .catering-aside > p,
@@ -457,12 +456,10 @@ h2 em {
 
 .feature-body p,
 .benefit p,
-.menu-disclaimer,
-.photo-note {
+.menu-disclaimer {
   margin-bottom: 0;
 }
 
-.photo-note,
 .menu-disclaimer {
   margin-top: 18px;
   font-size: 0.92rem;
@@ -877,11 +874,32 @@ h2 em {
 .footer-bottom {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
   margin-top: 28px;
-  padding: 18px 0;
+  padding: 18px 0 8px;
   border-top: 1px solid rgba(255, 247, 235, 0.16);
   font-size: 0.9rem;
+}
+
+.photo-credits {
+  margin: 0;
+  max-width: 68rem;
+  color: rgba(255, 247, 235, 0.82);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.photo-credits a {
+  color: var(--cream);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 @media (min-width: 720px) {
@@ -916,7 +934,7 @@ h2 em {
     grid-template-columns: 1.4fr 0.8fr 1fr;
   }
 
-  .footer-bottom,
+  .footer-meta,
   .section-top {
     flex-direction: row;
     align-items: flex-end;
@@ -961,17 +979,18 @@ h2 em {
   }
 
   .hero {
-    padding: 36px 0 48px;
+    padding: 28px 0 32px;
   }
 
   .hero-grid {
-    grid-template-columns: 0.92fr 1.08fr;
+    grid-template-columns: 0.96fr 1.04fr;
     align-items: center;
     gap: 40px;
   }
 
   .hero-photo {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 2;
+    max-height: min(420px, calc(100svh - 260px));
   }
 
   .feature-grid {

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PageHeader from '@/components/PageHeader';
-import { categories, photoCredit } from '@/lib/data';
+import { categories } from '@/lib/data';
 
 export default function MenuBoard() {
   const params = useSearchParams();
@@ -71,7 +71,7 @@ export default function MenuBoard() {
         </div>
         <p className="menu-disclaimer">
           Menu is subject to change based on ingredient availability. Prices are not listed here and can be confirmed
-          directly with Fluffy&apos;s Bistro. {photoCredit}
+          directly with Fluffy&apos;s Bistro.
         </p>
       </section>
     </>
