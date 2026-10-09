@@ -70,7 +70,7 @@ export default function Catering() {
             <div className="catering-photo">
               <Image
                 src={photos.hero}
-                alt="Illustrative photo of a seafood spread for a shared meal"
+                alt="Illustrative photo of shrimp and rice in a seasoned sauce"
                 fill
                 sizes="(max-width: 800px) 100vw, 40vw"
               />

@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Flame, MapPin, UtensilsCrossed } from 'lucide-react';
+import { ArrowRight, Flame, Instagram, MapPin, UtensilsCrossed } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
-import { featured, photos, socials } from '@/lib/data';
+import { featured, photoCredit, photos, socials } from '@/lib/data';
 
 export default function Home() {
   const instagram = socials[0];
@@ -34,13 +34,12 @@ export default function Home() {
             <div className="hero-photo">
               <Image
                 src={photos.hero}
-                alt="Illustrative photo of a seafood boil with shrimp, corn, and sausage"
+                alt="Illustrative photo of shrimp and rice in a seasoned sauce"
                 fill
                 priority
-                sizes="(max-width: 800px) 100vw, 50vw"
+                sizes="(max-width: 800px) 100vw, 46vw"
               />
             </div>
-            <BrandLogo className="hero-logo" />
           </div>
         </div>
       </section>
@@ -74,7 +73,13 @@ export default function Home() {
               key={item.title}
             >
               <div className="feature-photo">
-                <Image src={item.image} alt={item.alt} fill sizes="(max-width: 700px) 100vw, 33vw" />
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 700px) 100vw, 33vw"
+                  style={item.imagePosition ? { objectPosition: item.imagePosition } : undefined}
+                />
               </div>
               <div className="feature-body">
                 <h3>{item.title}</h3>
@@ -83,21 +88,27 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <p className="photo-note">
-          Food images are illustrative placeholders. Replace them with Fluffy&apos;s own photography before launch.
-        </p>
+        <p className="photo-note">{photoCredit}</p>
       </section>
 
       <section className="catering-band">
         <div className="shell catering-band-inner">
-          <div>
+          <div className="catering-band-copy">
             <p className="kicker">Let&apos;s make it an event</p>
             <h2>Bring the flavor to your next event!</h2>
             <p>Planning a party, celebration, or company gathering? Ask us about catering.</p>
+            <Link href="/catering" className="button primary">
+              Start a catering inquiry <ArrowRight size={18} aria-hidden="true" />
+            </Link>
           </div>
-          <Link href="/catering" className="button primary">
-            Start a catering inquiry <ArrowRight size={18} aria-hidden="true" />
-          </Link>
+          <div className="catering-band-photo">
+            <Image
+              src={photos.seafood}
+              alt="Illustrative photo of shrimp and rice in a seasoned sauce"
+              fill
+              sizes="(max-width: 800px) 100vw, 320px"
+            />
+          </div>
         </div>
       </section>
 
@@ -115,12 +126,12 @@ export default function Home() {
               </div>
             </div>
             <div className="button-row">
-              <Link className="button primary" href="/find-us">
+              <a className="button primary" href={instagram.href} target="_blank" rel="noopener noreferrer">
+                <Instagram size={18} aria-hidden="true" /> Instagram schedule
+              </a>
+              <Link className="button secondary" href="/find-us">
                 Where to find us
               </Link>
-              <a className="button secondary" href={instagram.href} target="_blank" rel="noopener noreferrer">
-                Instagram schedule
-              </a>
             </div>
           </div>
           <div className="find-mascot">

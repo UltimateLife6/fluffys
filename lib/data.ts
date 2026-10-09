@@ -8,6 +8,7 @@ export type MenuCategory = {
   description: string;
   image: string;
   imageAlt: string;
+  imagePosition?: string;
   items: MenuItem[];
 };
 
@@ -23,27 +24,32 @@ export const socials = [
 ];
 
 export const photos = {
-  hero: 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=1800&q=80',
-  seafood: 'https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=1200&q=80',
-  sandwich: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=1200&q=80',
-  bowl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&q=80',
-  funnel: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=1200&q=80',
-  lemonade: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=1200&q=80',
+  hero: '/food/cajun-seafood.jpg',
+  seafood: '/food/cajun-seafood.jpg',
+  sandwich: '/food/poboy.jpg',
+  bowl: '/food/korean-bbq-bowl.jpg',
+  funnel: '/food/funnel-cake.jpg',
+  lemonade: '/food/lemonade.jpg',
+  sides: '/food/sides.jpg',
 };
+
+export const photoCredit =
+  "Food photos are illustrative placeholders, not pictures of dishes from Fluffy's Bistro. Bowl, seafood, lemonade, and rice photos are from Unsplash. Funnel cake by Benny Mazur, CC BY 2.0. Shrimp po'boy by Kent Wang, CC BY-SA 2.0, via Wikimedia Commons.";
 
 export const categories: MenuCategory[] = [
   {
     name: 'Korean BBQ Bowls',
     description: 'Rice, cabbage, peppers, squash, cucumber, spicy mayo, and Korean BBQ sauce.',
     image: photos.bowl,
-    imageAlt: 'Illustrative photo of a rice bowl with vegetables',
+    imageAlt: 'Illustrative photo of a rice bowl with beef, vegetables, and sauce',
+    imagePosition: 'center 72%',
     items: [{ name: 'Veggie' }, { name: 'Chicken' }, { name: 'Steak' }, { name: 'Chicken & Steak' }],
   },
   {
     name: 'Seafood',
     description: 'Plates and platters served with Cajun rice and garlic bread.',
     image: photos.seafood,
-    imageAlt: 'Illustrative photo of seasoned shrimp',
+    imageAlt: 'Illustrative photo of shrimp and rice in a seasoned sauce',
     items: [
       { name: 'Catfish Plate' },
       { name: 'Shrimp Plate' },
@@ -55,14 +61,15 @@ export const categories: MenuCategory[] = [
     name: 'Po’Boys',
     description: 'Served with seasoned fries.',
     image: photos.sandwich,
-    imageAlt: 'Illustrative photo of a filled sandwich',
+    imageAlt: "Illustrative photo of a shrimp po'boy on French bread",
+    imagePosition: 'center 42%',
     items: [{ name: 'Catfish' }, { name: 'Shrimp' }, { name: 'Oyster' }, { name: 'Fluffy' }],
   },
   {
     name: 'Sides',
     description: 'Something extra for the table.',
-    image: photos.hero,
-    imageAlt: 'Illustrative photo of a shared seafood spread',
+    image: photos.sides,
+    imageAlt: 'Illustrative photo of a seasoned rice plate',
     items: [
       { name: 'Cajun Rice', note: 'Made with pork and beef sausage.' },
       { name: 'Red Bean + Rice', note: 'Made with beef sausage and smoked turkey.' },
@@ -75,7 +82,7 @@ export const categories: MenuCategory[] = [
     name: 'Funnel Cakes',
     description: 'Served with a scoop of ice cream.',
     image: photos.funnel,
-    imageAlt: 'Illustrative photo of ice cream, served with the funnel cakes',
+    imageAlt: 'Illustrative photo of a funnel cake dusted with powdered sugar',
     items: [
       { name: 'Classic', note: 'Powdered sugar, whipped cream, and vanilla ice cream.' },
       {
@@ -92,7 +99,8 @@ export const categories: MenuCategory[] = [
     name: 'Drinks',
     description: 'Freshly made 24 oz lemonades and frozen refreshments.',
     image: photos.lemonade,
-    imageAlt: 'Illustrative photo of a citrus drink',
+    imageAlt: 'Illustrative photo of colorful fruit drinks with citrus and ice',
+    imagePosition: 'center 35%',
     items: [
       { name: 'Original Lemonade' },
       { name: 'Raspberry Lemonade' },
@@ -111,6 +119,7 @@ export const featured = [
     description: categories[0].description,
     image: photos.bowl,
     alt: categories[0].imageAlt,
+    imagePosition: categories[0].imagePosition,
   },
   {
     title: 'Cajun Seafood',
@@ -125,6 +134,7 @@ export const featured = [
     description: categories[2].description,
     image: photos.sandwich,
     alt: categories[2].imageAlt,
+    imagePosition: categories[2].imagePosition,
   },
   {
     title: 'Funnel Cakes',
@@ -139,5 +149,6 @@ export const featured = [
     description: categories[5].description,
     image: photos.lemonade,
     alt: categories[5].imageAlt,
+    imagePosition: categories[5].imagePosition,
   },
 ];

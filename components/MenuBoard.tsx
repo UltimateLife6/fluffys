@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import PageHeader from '@/components/PageHeader';
-import { categories } from '@/lib/data';
+import { categories, photoCredit } from '@/lib/data';
 
 export default function MenuBoard() {
   const params = useSearchParams();
@@ -45,7 +45,13 @@ export default function MenuBoard() {
           {visible.map((category) => (
             <article className="menu-group" key={category.name}>
               <div className="menu-photo">
-                <Image src={category.image} alt={category.imageAlt} fill sizes="(max-width: 800px) 100vw, 50vw" />
+                <Image
+                  src={category.image}
+                  alt={category.imageAlt}
+                  fill
+                  sizes="(max-width: 800px) 100vw, 50vw"
+                  style={category.imagePosition ? { objectPosition: category.imagePosition } : undefined}
+                />
               </div>
               <div className="menu-group-body">
                 <p className="kicker">Fluffy&apos;s favorites</p>
@@ -65,7 +71,7 @@ export default function MenuBoard() {
         </div>
         <p className="menu-disclaimer">
           Menu is subject to change based on ingredient availability. Prices are not listed here and can be confirmed
-          directly with Fluffy&apos;s Bistro. Food photos are illustrative placeholders until official photography is added.
+          directly with Fluffy&apos;s Bistro. {photoCredit}
         </p>
       </section>
     </>

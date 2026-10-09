@@ -8,10 +8,10 @@ type BrandLogoProps = {
 export default function BrandLogo({ className = 'brand-logo', priority = false }: BrandLogoProps) {
   return (
     <Image
-      src="/brand/fluffys-logo.png"
+      src="/brand/fluffys-logo-display.png"
       alt="Fluffy's Bistro, Cajun Asian Fusion"
-      width={1000}
-      height={1153}
+      width={823}
+      height={1079}
       priority={priority}
       className={className}
     />
