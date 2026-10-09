@@ -42,6 +42,7 @@ a {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -714,7 +715,15 @@ h2 em {
 }
 
 .catering-layout {
+  align-items: start;
   margin-top: 28px;
+  padding-bottom: 0;
+}
+
+.benefit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .catering-photo {
@@ -748,7 +757,19 @@ h2 em {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  align-self: start;
+  width: 100%;
   padding: 22px;
+}
+
+.catering-form .button {
+  width: 100%;
+}
+
+.required-mark {
+  margin-left: 4px;
+  color: var(--red);
+  text-decoration: none;
 }
 
 .form-row {
@@ -765,6 +786,7 @@ h2 em {
 }
 
 .catering-form input,
+.catering-form select,
 .catering-form textarea {
   width: 100%;
   min-width: 0;
@@ -776,26 +798,61 @@ h2 em {
   color: var(--ink);
 }
 
+.catering-form select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 14px) calc(50% - 2px);
+  background-size:
+    6px 6px,
+    6px 6px;
+  background-repeat: no-repeat;
+}
+
 .catering-form textarea {
   min-height: 140px;
 }
 
-.catering-form input:focus,
-.catering-form textarea:focus {
+.catering-form input:focus-visible,
+.catering-form select:focus-visible,
+.catering-form textarea:focus-visible {
   border-color: var(--teal-deep);
   box-shadow: 0 0 0 3px rgba(20, 96, 100, 0.18);
-  outline: none;
+  outline: 3px solid var(--teal-deep);
+  outline-offset: 2px;
 }
 
-.catering-form input:user-invalid,
-.catering-form textarea:user-invalid {
+.catering-form input[aria-invalid='true'],
+.catering-form select[aria-invalid='true'],
+.catering-form textarea[aria-invalid='true'] {
   border-color: var(--red);
 }
 
-.form-feedback {
+.field-error,
+.form-fallback {
+  color: var(--red);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.form-hint,
+.form-fallback {
   margin: 0;
-  color: var(--teal-deep);
+}
+
+.form-hint {
+  color: var(--muted);
+  font-size: 0.92rem;
   font-weight: 700;
+}
+
+.form-fallback a {
+  color: var(--orange-deep);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .about-layout {
@@ -938,10 +995,17 @@ h2 em {
 
   .form-row,
   .find-layout,
-  .catering-layout,
   .about-layout,
   .find-band {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .benefit-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .benefit:last-child {
+    grid-column: auto;
   }
 
   .footer-top {
@@ -986,6 +1050,10 @@ h2 em {
     margin-top: 0;
     margin-left: 10px;
     box-shadow: 0 5px 0 #e25e00;
+  }
+
+  .catering-layout {
+    grid-template-columns: 1fr 1fr;
   }
 
   .brand-logo {

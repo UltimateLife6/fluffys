@@ -31,6 +31,7 @@ export const photos = {
   funnel: '/food/funnel-cake.jpg',
   lemonade: '/food/lemonade.jpg',
   sides: '/food/sides.jpg',
+  catering: '/food/catering-spread.jpg',
 };
 
 export const photoCredits = {

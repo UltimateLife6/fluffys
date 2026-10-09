@@ -46,7 +46,7 @@ export default function Footer() {
         </div>
         <div className="footer-bottom">
           <p className="photo-credits">
-            {photoCredits.note} Bowl, seafood, lemonade, and rice via{' '}
+            {photoCredits.note} Bowl, seafood, lemonade, rice, and the catering spread via{' '}
             <a href={photoCredits.unsplashHref} target="_blank" rel="noopener noreferrer">
               Unsplash
             </a>
