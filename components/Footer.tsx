@@ -29,8 +29,12 @@ export default function Footer() {
           </div>
           <div>
             <strong>Get in touch</strong>
-            <a href={contact.phoneHref}>{contact.phoneDisplay}</a>
-            <a href={`mailto:${contact.email}`}>{contact.email}</a>
+            <a href={contact.phoneHref} aria-label={`Call ${contact.phoneDisplay}`}>
+              {contact.phoneDisplay}
+            </a>
+            <a href={`mailto:${contact.email}`} aria-label={`Email ${contact.email}`}>
+              {contact.email}
+            </a>
             <div className="social-row">
               {socials.map((social) => {
                 const Icon = icons[social.name as keyof typeof icons];

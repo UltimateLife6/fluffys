@@ -5,9 +5,20 @@ import BrandLogo from '@/components/BrandLogo';
 import PageHeader from '@/components/PageHeader';
 
 export const metadata: Metadata = {
-  title: 'About',
+  title: 'About Us',
   description:
-    "Fluffy's Bistro is a Cajun Asian Fusion food truck serving Korean BBQ bowls, seafood, po'boys, funnel cakes, and lemonades.",
+    "Fluffy's Bistro brings Cajun cooking and Asian-inspired flavor together. Learn about the food truck, then find the next stop or ask about catering.",
+  ...(process.env.NEXT_PUBLIC_SITE_URL ? { alternates: { canonical: '/about' } } : {}),
+  openGraph: {
+    title: "About Us | Fluffy's Bistro",
+    description:
+      "Fluffy's Bistro brings Cajun cooking and Asian-inspired flavor together. Learn about the food truck, then find the next stop or ask about catering.",
+  },
+  twitter: {
+    title: "About Us | Fluffy's Bistro",
+    description:
+      "Fluffy's Bistro brings Cajun cooking and Asian-inspired flavor together. Learn about the food truck, then find the next stop or ask about catering.",
+  },
 };
 
 export default function About() {
@@ -24,17 +35,33 @@ export default function About() {
           <p className="kicker">Who we are</p>
           <h2>Good food. Good company.</h2>
           <p>
-            Fluffy&apos;s Bistro is a Cajun Asian Fusion food truck. The menu brings Korean BBQ bowls together with Cajun
-            seafood, po&apos;boys, funnel cakes, and freshly made lemonades.
+            Fluffy&apos;s Bistro brings two bold culinary worlds together: the comforting heat of Cajun cooking and the
+            vibrant flavors of Asian-inspired cuisine.
           </p>
           <p>
-            The truck is more than a place to grab dinner. It is a place to try dishes made with fresh ingredients, then
-            take that food to different spots around the city.
+            From Korean BBQ bowls to Cajun seafood and crispy po&apos;boys, our menu is built around big flavors and
+            satisfying meals.
           </p>
-          <p>Follow along on social media for surprise visits and the weekly schedule.</p>
+          <p>We&apos;re bringing that experience to different communities, one stop at a time.</p>
           <Link className="button primary" href="/menu">
             See what&apos;s cooking <ArrowRight size={18} aria-hidden="true" />
           </Link>
+        </div>
+      </section>
+      <section className="shell about-close" aria-labelledby="about-next">
+        <div className="about-close-panel">
+          <div>
+            <h2 id="about-next">Good food is worth finding.</h2>
+            <p>Follow Fluffy&apos;s Bistro for upcoming stops, or bring the flavor to your next event.</p>
+          </div>
+          <div className="button-row">
+            <Link className="button primary" href="/find-us">
+              Find the Truck <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+            <Link className="button secondary" href="/catering">
+              Explore Catering
+            </Link>
+          </div>
         </div>
       </section>
     </>

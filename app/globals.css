@@ -638,6 +638,7 @@ h2 em {
 }
 
 .filter-bar button {
+  min-height: 44px;
   white-space: nowrap;
   border: 2px solid var(--teal);
   border-radius: 999px;
@@ -736,6 +737,7 @@ h2 em {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 44px;
   margin: 12px 0;
   color: var(--teal-deep);
   font-weight: 800;
@@ -857,10 +859,41 @@ h2 em {
 
 .about-layout {
   padding-top: 36px;
+  padding-bottom: 12px;
 }
 
 .about-copy .button {
   margin-top: 8px;
+}
+
+.about-close {
+  padding: 8px 0 40px;
+}
+
+.about-close-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 24px;
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.about-close h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.about-close p {
+  max-width: 36rem;
+  margin: 0;
+  color: var(--muted);
+}
+
+.about-close .button-row {
+  margin-top: 0;
 }
 
 .location-panel,
@@ -870,6 +903,10 @@ h2 em {
 
 .location-panel > svg {
   margin-bottom: 8px;
+}
+
+.location-panel .button {
+  margin-top: 16px;
 }
 
 .empty-state {
@@ -998,6 +1035,16 @@ h2 em {
   .about-layout,
   .find-band {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .about-close-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) auto;
+    align-items: center;
+  }
+
+  .about-close .button-row {
+    justify-content: flex-end;
   }
 
   .benefit-grid {

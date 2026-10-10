@@ -1,21 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import PageHeader from '@/components/PageHeader';
 import { categories } from '@/lib/data';
 
 export default function MenuBoard() {
   const params = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
   const requested = params.get('category');
-  const [selected, setSelected] = useState('All');
+  const selected = requested && categories.some((category) => category.name === requested) ? requested : 'All';
 
-  useEffect(() => {
-    if (requested && categories.some((category) => category.name === requested)) {
-      setSelected(requested);
-    }
-  }, [requested]);
+  function selectCategory(name: string) {
+    if (name === selected) return;
+    const href = name === 'All' ? pathname : `${pathname}?category=${encodeURIComponent(name)}`;
+    router.push(href, { scroll: false });
+  }
 
   const visible = selected === 'All' ? categories : categories.filter((category) => category.name === selected);
 
@@ -27,14 +28,14 @@ export default function MenuBoard() {
       <section className="shell menu-section">
         <div className="filter-bar">
           <div className="filter-bar-scroll" role="toolbar" aria-label="Menu categories">
-          <button type="button" className={selected === 'All' ? 'active' : ''} onClick={() => setSelected('All')} aria-pressed={selected === 'All'}>
+          <button type="button" className={selected === 'All' ? 'active' : ''} onClick={() => selectCategory('All')} aria-pressed={selected === 'All'}>
             All
           </button>
           {categories.map((category) => (
             <button
               type="button"
               className={selected === category.name ? 'active' : ''}
-              onClick={() => setSelected(category.name)}
+              onClick={() => selectCategory(category.name)}
               aria-pressed={selected === category.name}
               key={category.name}
             >
