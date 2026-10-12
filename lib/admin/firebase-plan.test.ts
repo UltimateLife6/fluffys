@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { test } from 'node:test';
+import { openDatabase, closeDatabase } from './db.ts';
+import { planSqliteImport } from './firebase-import.ts';
+
+test('sqlite import plan keeps ids and omits password hashes', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'fluffys-firebase-plan-'));
+  const file = path.join(root, 'admin.sqlite');
+  const database = openDatabase(file);
+  const stamp = new Date().toISOString();
+  database.prepare('INSERT INTO users (id, email, name, role, password_hash, disabled, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)').run('user-1', 'owner@example.com', 'Owner', 'OWNER', 'secret-hash', stamp);
+  database.prepare('INSERT INTO categories (id, name, description, image, image_alt, sort_order, status, updated_at) VALUES (?, ?, ?, ?, ?, 0, ?, ?)').run('seafood', 'Seafood', 'Plates', '/food/cajun-seafood.jpg', 'Seafood', 'published', stamp);
+  database.prepare('INSERT INTO menu_items (id, category_id, name, note, price_cents, available, featured, image, sort_order, status, updated_at) VALUES (?, ?, ?, ?, NULL, 1, 0, NULL, 0, ?, ?)').run('item-1', 'seafood', 'Catfish Plate', '', 'draft', stamp);
+  database.prepare('INSERT INTO menu_items (id, category_id, name, note, price_cents, available, featured, image, sort_order, status, updated_at) VALUES (?, ?, ?, ?, NULL, 1, 0, NULL, 1, ?, ?)').run('orphan', 'missing', 'Orphan', '', 'published', stamp);
+  const plan = planSqliteImport(file);
+  assert.equal(plan.counts.adminUsers, 1);
+  assert.equal(plan.counts.menuCategories, 1);
+  assert.equal(plan.counts.menuItems, 2);
+  assert.equal(plan.statuses.menuItems.draft, 1);
+  assert.equal(plan.statuses.menuItems.published, 1);
+  assert.deepEqual(plan.orphanMenuItems, ['orphan']);
+  assert.equal(plan.ok, false);
+  assert.equal(plan.executed, false);
+  assert.equal(JSON.stringify(plan.collections.adminUsers).includes('secret-hash'), false);
+  assert.equal(plan.collections.menuItems[0].id, 'item-1');
+  closeDatabase(file);
+  rmSync(root, { recursive: true, force: true });
+});

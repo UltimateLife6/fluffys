@@ -1170,3 +1170,76 @@ h2 em {
     transform: none;
   }
 }
+
+button.menu-item-name {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-flag.sold-out {
+  color: var(--red);
+}
+
+.promo-banner {
+  background: var(--orange);
+  color: var(--ink);
+  text-align: center;
+  padding: 12px 16px;
+  font-weight: 800;
+}
+
+.promo-banner a {
+  color: inherit;
+}
+
+.stop-list {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.stop-list li {
+  display: grid;
+  gap: 2px;
+}
+
+.preview-note {
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  background: var(--white);
+  border-radius: 14px;
+  font-weight: 800;
+}
+
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.consent-banner {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--cream);
+  border-top: 3px solid var(--teal);
+}
+
+.consent-banner p {
+  margin: 0;
+  max-width: 70ch;
+}

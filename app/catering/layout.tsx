@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPublicPackages } from '@/lib/public-content';
 
 export const metadata: Metadata = {
   title: 'Catering',
@@ -17,6 +18,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CateringLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default async function CateringLayout({ children }: { children: React.ReactNode }) {
+  const packages = (await getPublicPackages()) as { id: string; name: string; description: string; pricing_note: string }[];
+  return (
+    <>
+      {children}
+      {packages.length ? (
+        <section className="section shell">
+          <h2>Catering packages</h2>
+          <div className="benefit-grid">
+            {packages.map((item) => (
+              <article className="benefit" key={item.id}>
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+                {item.pricing_note ? <p>{item.pricing_note}</p> : null}
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </>
+  );
 }

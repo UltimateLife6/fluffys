@@ -1,1 +1,37 @@
-{"name":"fluffys-bistro-redesign","version":"1.0.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"eslint ."},"dependencies":{"next":"^15.5.0","react":"^19.1.0","react-dom":"^19.1.0","lucide-react":"^0.468.0"},"devDependencies":{"typescript":"^5.9.0","@types/node":"^22.0.0","@types/react":"^19.0.0","@types/react-dom":"^19.0.0"}}
+{
+  "name": "fluffys-bistro-redesign",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ignore-pattern .next --ignore-pattern data --ignore-pattern public",
+    "test": "node --import ./scripts/register-alias.mjs --experimental-strip-types --test --test-concurrency=1 lib/catering-inquiry.test.ts lib/admin/admin.test.ts lib/admin/production.test.ts lib/admin/firebase-plan.test.ts lib/admin/firebase.test.ts",
+    "test:firebase": "firebase emulators:exec --project fluffys-local --only auth,firestore,storage \"node --import ./scripts/register-alias.mjs --experimental-strip-types --test --test-concurrency=1 lib/admin/firebase.test.ts\"",
+    "firebase:emulators": "firebase emulators:start --project fluffys-local --only auth,firestore,storage",
+    "firebase:import": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/firebase-import.ts",
+    "firebase:seed": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/firebase-seed.ts",
+    "db:migrate": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/db-migrate.ts",
+    "db:backup": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/db-backup.ts",
+    "admin:seed": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/seed-admin.ts",
+    "admin:reset": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/seed-admin.ts --reset"
+  },
+  "dependencies": {
+    "firebase": "^11.10.0",
+    "firebase-admin": "^14.5.0",
+    "lucide-react": "^0.468.0",
+    "next": "^15.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.5.7",
+    "firebase-tools": "^15.33.0",
+    "typescript": "^5.9.0"
+  }
+}

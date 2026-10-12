@@ -2,25 +2,37 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Flame, Instagram, MapPin, UtensilsCrossed } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
-import { featured, photos, socials } from '@/lib/data';
+import { photos } from '@/lib/data';
+import { getContact, getFeaturedCards, getPublicPromotions, getPublicSite, getPublicStops } from '@/lib/public-content';
 
-export default function Home() {
-  const instagram = socials[0];
+export default async function Home() {
+  const site = await getPublicSite();
+  const contact = await getContact();
+  const featured = await getFeaturedCards();
+  const stops = await getPublicStops();
+  const nextStop = stops[0];
+  const promotions = (await getPublicPromotions()) as { id: string; title: string; body: string; href: string }[];
+  const banner = promotions[0];
 
   return (
     <>
+      {banner ? (
+        <aside className="promo-banner">
+          <a href={banner.href || '/menu'} data-track="promotion_click" data-promotion-id={String(banner.id)}>
+            <strong>{banner.title}</strong>
+            {banner.body ? ` ${banner.body}` : ''}
+          </a>
+        </aside>
+      ) : null}
       <section className="hero">
         <div className="shell hero-grid">
           <div className="hero-copy">
             <p className="script-accent">Cajun Asian Fusion</p>
             <h1>
-              Bold flavors.
-              <span>Big appetites.</span>
+              {site.heroLine}
+              <span>{site.heroAccent}</span>
             </h1>
-            <p>
-              Cajun heat meets Asian-inspired flavor. Discover unforgettable seafood, Korean BBQ bowls, po&apos;boys, and
-              more at Fluffy&apos;s Bistro.
-            </p>
+            <p>{site.heroBody}</p>
             <div className="button-row">
               <Link href="/menu" className="button primary">
                 Explore Our Menu <ArrowRight size={18} aria-hidden="true" />
@@ -120,12 +132,21 @@ export default function Home() {
             <div className="info-line">
               <MapPin size={22} aria-hidden="true" />
               <div>
-                <strong>New location coming soon</strong>
-                <span>No confirmed public stops are listed. The weekly schedule is posted on Instagram.</span>
+                {nextStop ? (
+                  <>
+                    <strong>{String(nextStop.name)}</strong>
+                    <span>{String(nextStop.address)}</span>
+                  </>
+                ) : (
+                  <>
+                    <strong>New location coming soon</strong>
+                    <span>No confirmed public stops are listed. The weekly schedule is posted on Instagram.</span>
+                  </>
+                )}
               </div>
             </div>
             <div className="button-row">
-              <a className="button primary" href={instagram.href} target="_blank" rel="noopener noreferrer">
+              <a className="button primary" href={contact.instagram} target="_blank" rel="noopener noreferrer">
                 <Instagram size={18} aria-hidden="true" /> Instagram schedule
               </a>
               <Link className="button secondary" href="/find-us">

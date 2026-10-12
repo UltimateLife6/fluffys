@@ -1,6 +1,11 @@
 export type MenuItem = {
+  id?: string;
   name: string;
   note?: string;
+  priceCents?: number | null;
+  available?: boolean;
+  featured?: boolean;
+  image?: string | null;
 };
 
 export type MenuCategory = {

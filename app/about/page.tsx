@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
 import PageHeader from '@/components/PageHeader';
+import { getPublicSite } from '@/lib/public-content';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -21,7 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function About() {
+export default async function About() {
+  const site = await getPublicSite();
   return (
     <>
       <PageHeader kicker="Cajun Asian Fusion" title="More than a meal.">
@@ -34,15 +36,9 @@ export default function About() {
         <div className="about-copy">
           <p className="kicker">Who we are</p>
           <h2>Good food. Good company.</h2>
-          <p>
-            Fluffy&apos;s Bistro brings two bold culinary worlds together: the comforting heat of Cajun cooking and the
-            vibrant flavors of Asian-inspired cuisine.
-          </p>
-          <p>
-            From Korean BBQ bowls to Cajun seafood and crispy po&apos;boys, our menu is built around big flavors and
-            satisfying meals.
-          </p>
-          <p>We&apos;re bringing that experience to different communities, one stop at a time.</p>
+          {site.aboutParagraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
           <Link className="button primary" href="/menu">
             See what&apos;s cooking <ArrowRight size={18} aria-hidden="true" />
           </Link>
@@ -51,8 +47,8 @@ export default function About() {
       <section className="shell about-close" aria-labelledby="about-next">
         <div className="about-close-panel">
           <div>
-            <h2 id="about-next">Good food is worth finding.</h2>
-            <p>Follow Fluffy&apos;s Bistro for upcoming stops, or bring the flavor to your next event.</p>
+            <h2 id="about-next">{site.aboutCloseTitle}</h2>
+            <p>{site.aboutCloseBody}</p>
           </div>
           <div className="button-row">
             <Link className="button primary" href="/find-us">

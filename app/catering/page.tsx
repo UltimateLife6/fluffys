@@ -5,7 +5,6 @@ import { cloneElement, type FocusEvent, type FormEvent, type ReactElement, useEf
 import { ArrowRight, Calendar, Mail, Phone, UtensilsCrossed } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import {
-  buildCateringMailto,
   eventTypes,
   todayISO,
   validateCateringInquiry,
@@ -28,7 +27,7 @@ const benefits = [
   },
   {
     title: 'Email inquiry',
-    text: 'This form opens your email app with a prefilled message. Nothing is sent until you send that email.',
+    text: 'The request is saved here first. An email notice is sent only after the email service accepts it.',
     icon: Mail,
   },
 ];
@@ -49,27 +48,12 @@ function readInquiry(form: HTMLFormElement): CateringInquiry {
   };
 }
 
-function openMailto(url: string) {
-  return new Promise<boolean>((resolve) => {
-    let handedOff = false;
-    const mark = () => {
-      handedOff = true;
-    };
-    window.addEventListener('blur', mark);
-    document.addEventListener('visibilitychange', mark);
-    window.location.href = url;
-    window.setTimeout(() => {
-      window.removeEventListener('blur', mark);
-      document.removeEventListener('visibilitychange', mark);
-      resolve(handedOff || document.hidden);
-    }, 1200);
-  });
-}
-
 export default function Catering() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [mailtoFailed, setMailtoFailed] = useState(false);
   const [opening, setOpening] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [receipt, setReceipt] = useState<{ id: string; notification: string; duplicate: boolean } | null>(null);
   const [today, setToday] = useState('');
 
   useEffect(() => {
@@ -101,10 +85,28 @@ export default function Catering() {
     }
 
     setMailtoFailed(false);
+    setSubmitError('');
     setOpening(true);
-    const opened = await openMailto(buildCateringMailto(inquiry, contact.email));
+    const submissionId = window.sessionStorage.getItem('catering-submission') || crypto.randomUUID();
+    window.sessionStorage.setItem('catering-submission', submissionId);
+    try {
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ...inquiry, submissionId, company: String(new FormData(form).get('company') || '') }),
+      });
+      const data = (await response.json()) as { ok?: boolean; id?: string; notification?: string; duplicate?: boolean; error?: string };
+      if (!response.ok || !data.ok || !data.id) {
+        setSubmitError(data.error || 'The inquiry was not saved. Use the email link if you still want to send it yourself.');
+        setOpening(false);
+        return;
+      }
+      window.sessionStorage.removeItem('catering-submission');
+      setReceipt({ id: data.id, notification: data.notification || 'pending', duplicate: Boolean(data.duplicate) });
+    } catch {
+      setMailtoFailed(true);
+    }
     setOpening(false);
-    if (!opened) setMailtoFailed(true);
   }
 
   return (
@@ -142,7 +144,7 @@ export default function Catering() {
               From family celebrations to company gatherings, we&apos;d love to hear about your event. Share the details
               and we&apos;ll take it from there.
             </p>
-            <a className="contact-option" href={contact.phoneHref} aria-label={`Call ${contact.phoneDisplay}`}>
+            <a className="contact-option" href={contact.phoneHref} aria-label={`Call ${contact.phoneDisplay}`} data-track="phone_click">
               <Phone size={20} aria-hidden="true" />
               {contact.phoneDisplay}
             </a>
@@ -213,12 +215,31 @@ export default function Catering() {
                 placeholder="Menu interests, dietary needs, and anything else we should know."
               />
             </Field>
+            <label className="honeypot">
+              Company
+              <input name="company" tabIndex={-1} autoComplete="off" />
+            </label>
             <button className="button primary" type="submit" disabled={opening} aria-busy={opening} aria-describedby="catering-email-help">
-              Prepare Catering Inquiry <ArrowRight size={18} aria-hidden="true" />
+              {opening ? 'Saving inquiry…' : 'Send catering inquiry'} <ArrowRight size={18} aria-hidden="true" />
             </button>
             <p className="form-hint" id="catering-email-help">
-              Your email app will open with your event details. Please send the email to complete your inquiry.
+              The request is saved on this website before any email notice is attempted.
             </p>
+            {receipt ? (
+              <p role="status">
+                Saved inquiry {receipt.id}.
+                {receipt.notification === 'sent'
+                  ? ' The email service accepted the notice.'
+                  : receipt.notification === 'failed'
+                    ? ' The email notice was not accepted. The request is still saved.'
+                    : ' Email delivery is not configured, so this was not marked as emailed.'}
+              </p>
+            ) : null}
+            {submitError ? (
+              <p className="form-fallback" role="alert">
+                {submitError}
+              </p>
+            ) : null}
             {mailtoFailed ? (
               <p className="form-fallback" role="alert">
                 Your email app did not open. Email{' '}

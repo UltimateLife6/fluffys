@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import { Fredoka, Nunito, Pacifico } from 'next/font/google';
+import { headers } from 'next/headers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AnalyticsListener from '@/components/AnalyticsListener';
+import ConsentNotice from '@/components/ConsentNotice';
 import './globals.css';
 
 const display = Fredoka({
@@ -50,13 +53,16 @@ export const metadata: Metadata = {
   icons: { icon: '/brand/fluffys-logo.png' },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const admin = (await headers()).get('x-admin') === '1';
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${script.variable}`}>
       <body>
-        <Header />
+        {admin ? null : <Header />}
         <main id="content">{children}</main>
-        <Footer />
+        {admin ? null : <Footer />}
+        {admin ? null : <AnalyticsListener />}
+        {admin ? null : <ConsentNotice />}
       </body>
     </html>
   );

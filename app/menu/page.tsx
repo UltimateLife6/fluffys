@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import MenuBoard from '@/components/MenuBoard';
+import { currentUser } from '@/lib/admin/current-user';
+import { getPublicMenu } from '@/lib/public-content';
 
 export const metadata: Metadata = {
   title: 'Menu',
@@ -19,10 +21,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function MenuPage() {
+export default async function MenuPage({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
+  const params = await searchParams;
+  const preview = params.preview === '1' && Boolean(await currentUser());
+  const categories = await getPublicMenu(preview);
   return (
     <Suspense fallback={<p className="shell menu-loading">Loading the menu…</p>}>
-      <MenuBoard />
+      <MenuBoard categories={categories} preview={preview} />
     </Suspense>
   );
 }

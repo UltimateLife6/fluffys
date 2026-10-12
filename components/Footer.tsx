@@ -1,14 +1,25 @@
 import Link from 'next/link';
 import { Facebook, Instagram } from 'lucide-react';
 import BrandLogo from '@/components/BrandLogo';
-import { contact, photoCredits, socials } from '@/lib/data';
+import { photoCredits } from '@/lib/data';
+import { getContact } from '@/lib/public-content';
 
 const icons = {
   Instagram,
   Facebook,
 };
 
-export default function Footer() {
+export default async function Footer() {
+  const contact = await getContact();
+  const socials = [
+    { name: 'Instagram', href: contact.instagram },
+    { name: 'Facebook', href: contact.facebook },
+  ];
+  const orders = [
+    { name: 'DoorDash', href: contact.doordash, provider: 'doordash' },
+    { name: 'Uber Eats', href: contact.uberEats, provider: 'uber-eats' },
+    { name: 'Grubhub', href: contact.grubhub, provider: 'grubhub' },
+  ].filter((order) => order.href);
   return (
     <footer className="footer">
       <div className="shell">
@@ -29,9 +40,14 @@ export default function Footer() {
           </div>
           <div>
             <strong>Get in touch</strong>
-            <a href={contact.phoneHref} aria-label={`Call ${contact.phoneDisplay}`}>
+            <a href={contact.phoneHref} aria-label={`Call ${contact.phoneDisplay}`} data-track="phone_click">
               {contact.phoneDisplay}
             </a>
+            {orders.map((order) => (
+              <a key={order.provider} href={order.href} target="_blank" rel="noopener noreferrer" data-track="order_link_click" data-provider={order.provider}>
+                {order.name}
+              </a>
+            ))}
             <a href={`mailto:${contact.email}`} aria-label={`Email ${contact.email}`}>
               {contact.email}
             </a>
