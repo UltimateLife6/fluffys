@@ -5,11 +5,12 @@ import { sendRestaurantEmail, mailProvider } from '@/lib/admin/mail';
 import { assertCan, redact, type Actor, type AdminAction, type Role } from '@/lib/admin/permissions';
 import { readinessReport } from '@/lib/admin/readiness';
 import { bucketKey, plainText, safeUrl, sessionPolicy } from '@/lib/admin/security';
+import { dailyEventCounts } from '@/lib/admin/analytics-series';
 import { cleanSiteContent, defaultSiteContent, type SiteContent } from '@/lib/admin/site-defaults';
 import { contact } from '@/lib/data';
 import type { ContentStatus, InquiryStatus } from '@/lib/admin/service';
 
-const inquiryStatuses = ['email_prepared', 'received', 'reviewing', 'contacted', 'closed'] as const;
+const inquiryStatuses = ['email_prepared', 'received', 'reviewing', 'contacted', 'quoted', 'booked', 'closed'] as const;
 const sessionMs = 12 * 60 * 60 * 1000;
 
 function now() {
@@ -606,6 +607,7 @@ export async function readSiteDocument(actor: Actor | null) {
   return {
     draft: parseContent(row?.draft_json) || defaultSiteContent,
     published: parseContent(row?.published_json),
+    updatedAt: row?.updated_at ? String(row.updated_at) : null,
   };
 }
 
@@ -825,6 +827,7 @@ export async function analyticsReport(actor: Actor | null, from: string, to: str
     metadata_json: string;
     device: string;
     referrer_host: string;
+    created_at: string;
   }[];
   const previousTotal = events.filter((row) => String(row.created_at) >= previousStart.toISOString() && String(row.created_at) <= previousEnd.toISOString()).length;
   const count = (name: string) => rows.filter((row) => row.name === name).length;
@@ -839,7 +842,9 @@ export async function analyticsReport(actor: Actor | null, from: string, to: str
     total: rows.length,
     previousTotal,
     menuViews: count('menu_view'),
+    pageViews: count('page_view'),
     itemViews: count('menu_item_view'),
+    daily: dailyEventCounts(rows, from, to),
     orderClicks: count('order_link_click'),
     phoneClicks: count('phone_click'),
     inquiries: count('catering_inquiry_submit'),

@@ -155,7 +155,9 @@ test('menu, stops, inquiries, analytics, and audit rules', async () => {
   const stored = service.listInquiries(owner) as { id: string; status: string }[];
   assert.equal(stored[0].status, 'received');
   service.updateInquiry(owner, stored[0].id, 'contacted', 'Called the host.');
-  assert.equal((service.listInquiries(owner) as { status: string }[])[0].status, 'contacted');
+  service.updateInquiry(owner, stored[0].id, 'quoted', 'Sent a quote.');
+  service.updateInquiry(owner, stored[0].id, 'booked', 'Date held.');
+  assert.equal((service.listInquiries(owner) as { status: string }[])[0].status, 'booked');
   const rejected = await postInquiry(
     new Request('http://localhost/api/inquiries', {
       method: 'POST',
@@ -185,6 +187,8 @@ test('menu, stops, inquiries, analytics, and audit rules', async () => {
   const day = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   const report = service.analyticsReport(owner, day, day);
   assert.equal(report.menuViews, 1);
+  assert.equal(report.pageViews, 0);
+  assert.ok(report.daily.some((entry) => entry.label === day && entry.total >= 1));
   assert.equal(report.devices.some((entry) => entry.label === 'mobile'), true);
 
   assert.throws(() => service.inviteOwner(owner, { name: 'New', email: 'new@test.local', password: 'long-password', role: 'NOCTARIS_ADMIN' }), { name: 'Forbidden' });

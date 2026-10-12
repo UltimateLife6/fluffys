@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern .next --ignore-pattern data --ignore-pattern public",
-    "test": "node --import ./scripts/register-alias.mjs --experimental-strip-types --test --test-concurrency=1 lib/catering-inquiry.test.ts lib/admin/admin.test.ts lib/admin/production.test.ts lib/admin/firebase-plan.test.ts lib/admin/firebase.test.ts",
+    "test": "node --import ./scripts/register-alias.mjs --experimental-strip-types --test --test-concurrency=1 lib/catering-inquiry.test.ts lib/admin/admin.test.ts lib/admin/production.test.ts lib/admin/menu-view.test.ts lib/admin/firebase-plan.test.ts lib/admin/firebase.test.ts",
     "test:firebase": "firebase emulators:exec --project fluffys-local --only auth,firestore,storage \"node --import ./scripts/register-alias.mjs --experimental-strip-types --test --test-concurrency=1 lib/admin/firebase.test.ts\"",
     "firebase:emulators": "firebase emulators:start --project fluffys-local --only auth,firestore,storage",
     "firebase:import": "node --import ./scripts/register-alias.mjs --experimental-strip-types scripts/firebase-import.ts",

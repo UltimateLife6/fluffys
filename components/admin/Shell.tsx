@@ -3,55 +3,73 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  BarChart3,
+  FileText,
+  LayoutDashboard,
+  MapPin,
+  Megaphone,
+  ScrollText,
+  Settings,
+  Truck,
+  Users,
+  UtensilsCrossed,
+} from 'lucide-react';
 import { logoutAction } from '@/app/admin/actions';
 import type { Role } from '@/lib/admin/permissions';
 
 const links = [
-  { href: '/admin', label: 'Overview' },
-  { href: '/admin/menu', label: 'Menu Manager' },
-  { href: '/admin/locations', label: 'Truck Locations' },
-  { href: '/admin/catering', label: 'Catering' },
-  { href: '/admin/promotions', label: 'Promotions' },
-  { href: '/admin/content', label: 'Website Content' },
-  { href: '/admin/analytics', label: 'Analytics' },
-  { href: '/admin/activity', label: 'Activity Log' },
+  { href: '/admin', label: 'Overview', icon: LayoutDashboard },
+  { href: '/admin/menu', label: 'Menu', icon: UtensilsCrossed },
+  { href: '/admin/locations', label: 'Truck Locations', icon: MapPin },
+  { href: '/admin/catering', label: 'Catering', icon: Truck },
+  { href: '/admin/promotions', label: 'Promotions', icon: Megaphone },
+  { href: '/admin/content', label: 'Website Content', icon: FileText },
+  { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/admin/activity', label: 'Activity Log', icon: ScrollText },
+];
+
+const restricted = [
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/users', label: 'User Management', icon: Users },
 ];
 
 export default function Shell({ role, name, children }: { role: Role; name: string; children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const items = [...links];
-  if (role === 'NOCTARIS_ADMIN') {
-    items.push({ href: '/admin/settings', label: 'Settings' }, { href: '/admin/users', label: 'User Management' });
-  }
+  const items = role === 'NOCTARIS_ADMIN' ? [...links, ...restricted] : links;
+  const roleLabel = role === 'NOCTARIS_ADMIN' ? 'Noctaris admin' : 'Owner';
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   return (
     <div className="admin-body">
       <div className="admin-shell">
-        <aside className={open ? 'admin-sidebar open' : 'admin-sidebar'}>
-          <Link className="admin-brand" href="/admin" onClick={() => setOpen(false)}>
-            <Image src="/brand/fluffys-logo-display.png" alt="" width={54} height={71} />
-            <span>Fluffy&apos;s admin</span>
+        {open ? <button className="admin-scrim" type="button" aria-label="Close menu" onClick={() => setOpen(false)} /> : null}
+        <aside className={open ? 'admin-sidebar is-open' : 'admin-sidebar'} id="admin-nav">
+          <Link className="admin-brand" href="/admin">
+            <Image src="/brand/fluffys-logo-display.png" alt="" width={48} height={63} />
+            <span>Fluffy&apos;s Bistro</span>
           </Link>
           <nav className="admin-nav" aria-label="Admin">
             {items.map((item) => {
-              const active = pathname === item.href;
+              const active = item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href);
+              const Icon = item.icon;
               return (
-                <Link key={item.href} href={item.href} aria-current={active ? 'page' : undefined} onClick={() => setOpen(false)}>
+                <Link key={item.href} href={item.href} aria-current={active ? 'page' : undefined}>
+                  <Icon aria-hidden="true" size={18} />
                   {item.label}
                 </Link>
               );
             })}
           </nav>
-        </aside>
-        <div className="admin-main">
-          <button className="button secondary admin-menu-toggle" type="button" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
-            {open ? 'Close menu' : 'Admin menu'}
-          </button>
-          <div className="admin-top">
-            <p className="admin-muted">
-              Signed in as {name} · {role === 'NOCTARIS_ADMIN' ? 'Noctaris admin' : 'Owner'}
+          <div className="admin-sidebar-foot">
+            <p>
+              <strong>{name}</strong>
+              <span>{roleLabel}</span>
             </p>
             <form action={logoutAction}>
               <button className="button secondary" type="submit">
@@ -59,7 +77,17 @@ export default function Shell({ role, name, children }: { role: Role; name: stri
               </button>
             </form>
           </div>
-          {children}
+        </aside>
+        <div className="admin-main">
+          <div className="admin-topbar">
+            <button className="admin-icon-btn" type="button" aria-expanded={open} aria-controls="admin-nav" onClick={() => setOpen((value) => !value)}>
+              {open ? 'Close' : 'Menu'}
+            </button>
+            <p>
+              {name} · {roleLabel}
+            </p>
+          </div>
+          <div className="admin-content">{children}</div>
         </div>
       </div>
     </div>

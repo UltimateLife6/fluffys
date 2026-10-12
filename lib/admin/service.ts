@@ -7,6 +7,7 @@ import { applySqliteMigrations } from '@/lib/admin/migrate';
 import { assertCan, redact, type Actor, type AdminAction, type Role } from '@/lib/admin/permissions';
 import { readinessReport } from '@/lib/admin/readiness';
 import { plainText, safeUrl, sessionPolicy } from '@/lib/admin/security';
+import { dailyEventCounts } from '@/lib/admin/analytics-series';
 import { cleanSiteContent, defaultSiteContent, type SiteContent } from '@/lib/admin/site-defaults';
 
 export type { SiteContent } from '@/lib/admin/site-defaults';
@@ -14,7 +15,7 @@ export { defaultSiteContent } from '@/lib/admin/site-defaults';
 
 export type ContentStatus = 'draft' | 'published' | 'archived';
 
-const inquiryStatuses = ['email_prepared', 'received', 'reviewing', 'contacted', 'closed'] as const;
+const inquiryStatuses = ['email_prepared', 'received', 'reviewing', 'contacted', 'quoted', 'booked', 'closed'] as const;
 const dummyPasswordHash = `${'ab'.repeat(16)}:${'cd'.repeat(64)}`;
 let migrationsReady = false;
 export type InquiryStatus = (typeof inquiryStatuses)[number];
@@ -522,9 +523,11 @@ export function savePromotion(
 export function readSiteDocument(actor: Actor | null) {
   requireAction(actor, 'content.read');
   const row = db().prepare('SELECT * FROM site_documents WHERE id = ?').get('website') as { draft_json: string; published_json: string | null } | undefined;
+  const stored = row as { draft_json: string; published_json: string | null; updated_at?: string } | undefined;
   return {
-    draft: row ? (JSON.parse(row.draft_json) as SiteContent) : defaultSiteContent,
-    published: row?.published_json ? (JSON.parse(row.published_json) as SiteContent) : null,
+    draft: stored ? (JSON.parse(stored.draft_json) as SiteContent) : defaultSiteContent,
+    published: stored?.published_json ? (JSON.parse(stored.published_json) as SiteContent) : null,
+    updatedAt: stored?.updated_at || null,
   };
 }
 
@@ -699,6 +702,7 @@ export function analyticsReport(actor: Actor | null, from: string, to: string) {
     metadata_json: string;
     device: string;
     referrer_host: string;
+    created_at: string;
   }[];
   const previous = db().prepare('SELECT COUNT(*) AS count FROM analytics_events WHERE created_at >= ? AND created_at <= ?').get(previousStart.toISOString(), previousEnd.toISOString()) as {
     count: number;
@@ -718,7 +722,9 @@ export function analyticsReport(actor: Actor | null, from: string, to: string) {
     total: rows.length,
     previousTotal: previous.count,
     menuViews: count('menu_view'),
+    pageViews: count('page_view'),
     itemViews: count('menu_item_view'),
+    daily: dailyEventCounts(rows, from, to),
     orderClicks: count('order_link_click'),
     phoneClicks: count('phone_click'),
     inquiries: count('catering_inquiry_submit'),

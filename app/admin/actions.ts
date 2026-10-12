@@ -76,20 +76,33 @@ export async function logoutAction() {
   redirect('/admin/login');
 }
 
+async function imageFromForm(user: Awaited<ReturnType<typeof actor>>, formData: FormData) {
+  const file = formData.get('file');
+  if (!(file instanceof File) || file.size === 0) return null;
+  assertCan(user, 'menu.write');
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const stored = await storeImage({ type: file.type, size: file.size, name: file.name, bytes });
+  await recordStoredImage(user, stored);
+  return stored.path;
+}
+
 export async function saveCategoryAction(formData: FormData) {
   try {
-    await saveCategory(await actor(), {
+    const user = await actor();
+    const uploaded = await imageFromForm(user, formData);
+    const id = await saveCategory(user, {
       id: String(formData.get('id') || '') || undefined,
       name: String(formData.get('name') || ''),
       description: String(formData.get('description') || ''),
-      image: String(formData.get('image') || ''),
+      image: uploaded || String(formData.get('image') || ''),
       imageAlt: String(formData.get('imageAlt') || ''),
       imagePosition: String(formData.get('imagePosition') || ''),
     });
+    if (formData.get('intent') === 'publish') await setCategoryStatus(user, String(id), 'published');
   } catch (error) {
     fail('/admin/menu', error);
   }
-  redirect('/admin/menu');
+  redirect('/admin/menu?tab=categories&notice=saved');
 }
 
 export async function categoryStatusAction(formData: FormData) {
@@ -111,8 +124,11 @@ export async function moveCategoryAction(formData: FormData) {
 }
 
 export async function saveItemAction(formData: FormData) {
+  const publishing = formData.get('intent') === 'publish';
   try {
-    await saveMenuItem(await actor(), {
+    const user = await actor();
+    const uploaded = await imageFromForm(user, formData);
+    const id = await saveMenuItem(user, {
       id: String(formData.get('id') || '') || undefined,
       categoryId: String(formData.get('categoryId') || ''),
       name: String(formData.get('name') || ''),
@@ -120,12 +136,13 @@ export async function saveItemAction(formData: FormData) {
       price: String(formData.get('price') || ''),
       available: formData.get('available') === 'on',
       featured: formData.get('featured') === 'on',
-      image: String(formData.get('image') || '') || null,
+      image: uploaded || String(formData.get('image') || '') || null,
     });
+    if (publishing) await setMenuItemStatus(user, String(id), 'published');
   } catch (error) {
     fail('/admin/menu', error);
   }
-  redirect('/admin/menu');
+  redirect(`/admin/menu?notice=${publishing ? 'published' : 'saved'}`);
 }
 
 export async function itemStatusAction(formData: FormData) {

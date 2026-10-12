@@ -1,46 +1,27 @@
+import ActivityTimeline from '@/components/admin/ActivityTimeline';
 import { currentUser } from '@/lib/admin/current-user';
-import { listAudit } from '@/lib/admin/gateway';
+import { listAudit, listUsers } from '@/lib/admin/gateway';
+import type { AuditRow } from '@/lib/admin/activity-view';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ActivityPage() {
-  const logs = (await listAudit(await currentUser())) as {
-    id: string;
-    created_at: string;
-    role: string;
-    action: string;
-    entity_type: string;
-    entity_id: string;
-    user_id: string;
-    before_json: string | null;
-    after_json: string | null;
-  }[];
-  return (
-    <>
-      <h1>Activity log</h1>
-      <p className="admin-muted">Records are read-only. Owners do not see account or settings changes. Noctaris admins see the full log.</p>
-      {logs.length === 0 ? <p className="admin-card">No administrative changes have been recorded yet.</p> : null}
-      <div className="admin-table-wrap">
-        <table className="admin-table">
-          <thead><tr><th>When</th><th>Action</th><th>Record</th><th>Role</th><th>Details</th></tr></thead>
-          <tbody>
-            {logs.map((log) => (
-              <tr key={log.id}>
-                <td>{log.created_at.replace('T', ' ').slice(0, 19)}</td>
-                <td>{log.action}</td>
-                <td>{log.entity_type}<br /><span className="admin-muted">{log.entity_id}</span></td>
-                <td>{log.role}</td>
-                <td>
-                  <details>
-                    <summary>Changes</summary>
-                    <pre>{JSON.stringify({ before: log.before_json, after: log.after_json }, null, 2)}</pre>
-                  </details>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  );
+  const user = await currentUser();
+  const logs = ((await listAudit(user)) as AuditRow[]).map((log) => ({
+    id: String(log.id),
+    created_at: String(log.created_at),
+    role: String(log.role),
+    action: String(log.action),
+    entity_type: String(log.entity_type),
+    entity_id: String(log.entity_id),
+    user_id: String(log.user_id),
+    before_json: log.before_json == null ? null : String(log.before_json),
+    after_json: log.after_json == null ? null : String(log.after_json),
+  }));
+  const names: Record<string, string> = {};
+  if (user?.role === 'NOCTARIS_ADMIN') {
+    const accounts = (await listUsers(user)) as { id: string; name: string }[];
+    for (const account of accounts) names[account.id] = account.name;
+  }
+  return <ActivityTimeline logs={logs} names={names} ownerView={user?.role !== 'NOCTARIS_ADMIN'} />;
 }
